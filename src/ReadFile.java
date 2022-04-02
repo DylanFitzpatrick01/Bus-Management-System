@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
+ * Class to read in the input files given
  * @author DylanFitzpatrick01
  */
 public class ReadFile {
@@ -21,10 +22,10 @@ public class ReadFile {
      * @param parentStation
      * @throws IOException
      */
-    static void readStops(ArrayList<String> stopID, ArrayList<String> stopCode, ArrayList<String> stopName,
-                            ArrayList<String> stopDesc, ArrayList<String> stopLat, ArrayList<String> stopLon,
-                            ArrayList<String> stopURL, ArrayList<String> zoneID, ArrayList<String> locationType,
-                            ArrayList<String> parentStation) throws IOException {
+    static void readStops(ArrayList<Integer> stopID, ArrayList<Integer> stopCode, ArrayList<String> stopName,
+                            ArrayList<String> stopDesc, ArrayList<Double> stopLat, ArrayList<Double> stopLon,
+                            ArrayList<String> stopURL, ArrayList<Integer> zoneID, ArrayList<Integer> locationType,
+                            ArrayList<Integer> parentStation) {
         try {
             BufferedReader br = new BufferedReader((new FileReader("stops.txt")));
             // skip line of headings
@@ -35,20 +36,20 @@ public class ReadFile {
             while ((line = br.readLine()) != null) {
                 // split array by comma
                 splitLine = line.split(",");
-                stopID.add(splitLine[0]);
-                stopCode.add(splitLine[1]);
-                stopName.add(moveFlagstop(splitLine[2]));
+                stopID.add(checkIntIsNotBlank(splitLine[0]));
+                stopCode.add(checkIntIsNotBlank(splitLine[1]));
+                stopName.add(splitLine[2]);
                 stopDesc.add(splitLine[3]);
-                stopLat.add(splitLine[4]);
-                stopLon.add(splitLine[5]);
+                stopLat.add(checkDoubleIsNotBlank(splitLine[4]));
+                stopLon.add(checkDoubleIsNotBlank(splitLine[5]));
                 stopURL.add(splitLine[6]);
-                zoneID.add(splitLine[7]);
-                locationType.add(splitLine[8]);
+                zoneID.add(checkIntIsNotBlank(splitLine[7]));
+                locationType.add(checkIntIsNotBlank(splitLine[8]));
                 // if there is no value for parent station, add a space character (to represent no value)
                 if(splitLine.length == 9){
-                    parentStation.add("");
+                    parentStation.add(0);
                 }
-                else parentStation.add((splitLine[9]));
+                else parentStation.add((checkIntIsNotBlank(splitLine[9])));
             }
         } catch (FileNotFoundException e){
             System.err.println("\"stops.txt\" not found. ");
@@ -66,7 +67,6 @@ public class ReadFile {
    static String moveFlagstop(String string) {
        // copy each word in string into an array splitString
        String[] splitString = string.split("\\s+");
-
        // save first value of splitString (we want to move this value)
        String wordToMove = splitString[0];
        // only alter the string if it contains one of the keywords
@@ -97,9 +97,9 @@ public class ReadFile {
      * @param dropOffType
      * @param shapeDistTravelled
      */
-    static void readStopTimes(ArrayList<String> tripId, ArrayList<String> arrivalTime, ArrayList<String> departureTime,
-                            ArrayList<String> stopID, ArrayList<String> stopSequence, ArrayList<String> pickupType,
-                            ArrayList<String> dropOffType,ArrayList<String> shapeDistTravelled) {
+    static void readStopTimes(ArrayList<Integer> tripId, ArrayList<String> arrivalTime, ArrayList<String> departureTime,
+                              ArrayList<Integer> stopID, ArrayList<Integer> stopSequence, ArrayList<String> stopHeadsign,
+                              ArrayList<Integer> pickupType, ArrayList<Integer> dropOffType, ArrayList<Double> shapeDistTravelled) {
         try{
             BufferedReader br = new BufferedReader(new FileReader("stop_times.txt"));
             String line;
@@ -110,16 +110,19 @@ public class ReadFile {
             while ((line = br.readLine()) != null){
                 // split array by commas
                 splitString = line.split(",");
-                tripId.add(splitString[0]);
+                tripId.add(checkIntIsNotBlank(splitString[0]));
                 arrivalTime.add(splitString[1]);
                 departureTime.add(splitString[2]);
-                stopID.add(splitString[3]);
-                stopSequence.add(splitString[4]);
-                pickupType.add(splitString[5]);
-                dropOffType.add(splitString[6]);
-                shapeDistTravelled.add(splitString[7]);
+                stopID.add(checkIntIsNotBlank(splitString[3]));
+                stopSequence.add(checkIntIsNotBlank(splitString[4]));
+                stopHeadsign.add(splitString[5]);
+                pickupType.add(checkIntIsNotBlank(splitString[6]));
+                dropOffType.add(checkIntIsNotBlank(splitString[7]));
+                if(splitString.length == 8){
+                    shapeDistTravelled.add(0.0);
+                }
+                else shapeDistTravelled.add(checkDoubleIsNotBlank(splitString[8]));
             }
-
         } catch(FileNotFoundException e){
             System.err.println("\"stop_times.txt\" not found. ");
             e.printStackTrace();
@@ -135,8 +138,8 @@ public class ReadFile {
      * @param transferType
      * @param minTransferTime
      */
-    static void readTransfers(ArrayList<String> fromStopID, ArrayList<String> toStopID, ArrayList<String> transferType,
-                                ArrayList<String> minTransferTime) {
+    static void readTransfers(ArrayList<Integer> fromStopID, ArrayList<Integer> toStopID, ArrayList<Integer> transferType,
+                                ArrayList<Integer> minTransferTime) {
         try {
             BufferedReader br = new BufferedReader(new FileReader("transfers.txt"));
             // skip the header line of the file
@@ -147,13 +150,13 @@ public class ReadFile {
             while((line = br.readLine()) != null){
                 // split string by commas
                 splitLine = line.split(",");
-                fromStopID.add(splitLine[0]);
-                toStopID.add(splitLine[1]);
-                transferType.add(splitLine[2]);
+                fromStopID.add(checkIntIsNotBlank(splitLine[0]));
+                toStopID.add(checkIntIsNotBlank(splitLine[1]));
+                transferType.add(checkIntIsNotBlank(splitLine[2]));
                 if(splitLine.length == 3){
-                    minTransferTime.add("");
+                    minTransferTime.add(0);
                 }
-                else minTransferTime.add(splitLine[3]);
+                else minTransferTime.add(checkIntIsNotBlank(splitLine[3]));
             }
         } catch (FileNotFoundException e) {
             System.err.println("\"transfers.txt\" not found. ");
@@ -164,50 +167,33 @@ public class ReadFile {
     }
 
     /**
-     * main method to test code above
-     * @param args
-     * @throws IOException
+     * avoid null value returning error for int
+     * @param string: input string
+     * @return 0 is string is null, parsed int otherwise
      */
-    /*
-    public static void main(String[] args) throws IOException {
-        String testString = ("WB This is my test string");
-        System.out.println(moveFlagstop(testString));
-        ArrayList<String> stopID = new ArrayList<>();
-        ArrayList<String> stopCode = new ArrayList<>();
-        ArrayList<String> stopName = new ArrayList<>();
-        ArrayList<String> stopDesc = new ArrayList<>();
-        ArrayList<String> stopLat  = new ArrayList<>();
-        ArrayList<String> stopLon = new ArrayList<>();
-        ArrayList<String> zoneID = new ArrayList<>();
-        ArrayList<String> stopURL = new ArrayList<>();
-        ArrayList<String> locationType = new ArrayList<>();
-        ArrayList<String> parentStation = new ArrayList<>();
-        readStops(stopID, stopCode, stopName, stopDesc, stopLat, stopLon, zoneID, stopURL, locationType, parentStation);
-        ArrayList<String> tripId = new ArrayList<>();
-        ArrayList<String> arrivalTime = new ArrayList<>();
-        ArrayList<String> departureTime = new ArrayList<>();
-        ArrayList<String> stopSequence = new ArrayList<>();
-        ArrayList<String> pickupType = new ArrayList<>();
-        ArrayList<String> dropOffType = new ArrayList<>();
-        ArrayList<String> shapeDistTravelled = new ArrayList<>();
-        readStopTimes(tripId, arrivalTime, departureTime, stopSequence, stopID, pickupType, dropOffType, shapeDistTravelled);
-        System.out.println(tripId);
-        System.out.println(arrivalTime);
-        System.out.println(departureTime);
-        System.out.println(stopSequence);
-        System.out.println(stopID);
-        System.out.println(pickupType);
-        System.out.println(dropOffType);
-        System.out.println(shapeDistTravelled);
-        ArrayList<String> fromStopID = new ArrayList<>();
-        ArrayList<String> toStopID = new ArrayList<>();
-        ArrayList<String> transferType = new ArrayList<>();
-        ArrayList<String> minTransferTime = new ArrayList<>();
-        readTransfers(fromStopID,toStopID,transferType,minTransferTime);
-        System.out.println(fromStopID);
-        System.out.println(toStopID);
-        System.out.println(transferType);
-        System.out.println(minTransferTime);
+    static int checkIntIsNotBlank(String string){
+        if (string != null && !string.equals(" ")) {
+            return Integer.parseInt(string);
+        }
+        return 0;
     }
+
+    /**
+     *  avoid null value returning error for double
+     * @param string: input string
+     * @return 0.0 if string is null, parsed double otherwise
      */
+    static double checkDoubleIsNotBlank(String string){
+        if (string != null && !string.equals(" ")) {
+            return Double.parseDouble(string);
+        }
+        return 0;
+    }
+
+    static String convertTime(String string){
+           if(string.charAt(0) == ' '){
+               string = "0" + string.substring(1);
+           }
+           return string;
+    }
 }
