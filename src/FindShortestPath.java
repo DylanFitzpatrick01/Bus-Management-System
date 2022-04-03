@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -44,6 +43,7 @@ public class FindShortestPath {
      */
     void listOfStops(EdgeWeightedDigraph ewd, int source, int destination) {
         DijkstraSP dijkstra = new DijkstraSP(ewd, source);
+        // if a path exists
             if(dijkstra.hasPathTo(destination)){
                 System.out.println("\nThe path from stop " + source + " to stop " + destination + " is: ");
                 for(DirectedEdge de : dijkstra.pathTo(destination)){
