@@ -30,14 +30,31 @@ public class StopSearch {
         return string;
     }
 
+    /**
+     * print stop details
+     * @param searchStop: stop to search for
+     * @param stopId
+     * @param stopName
+     * @param stopCode
+     * @param stopDesc
+     * @param stopLat
+     * @param stopLon
+     * @param stopURL
+     * @param zoneID
+     * @param locationType
+     * @param parentStation
+     * @param tst: ternary search tree
+     */
     void printDetails(String searchStop, ArrayList<Integer> stopId, ArrayList<String> stopName, ArrayList<Integer> stopCode,
                      ArrayList<String> stopDesc, ArrayList<Double> stopLat, ArrayList<Double> stopLon, ArrayList<String> stopURL,
                       ArrayList<Integer> zoneID, ArrayList<Integer> locationType, ArrayList<Integer> parentStation, TST tst) {
         ArrayList<String> movedKeywords = new ArrayList<>();
         System.out.println();
+        // insert all stops into ternary search tree
         for (String value : stopName) {
             tst.put(moveKeywords(value), 0);
         }
+        // print stop details
         for (Object s : tst.keysWithPrefix(searchStop)) {
             String string = s.toString();
             movedKeywords.add(string);

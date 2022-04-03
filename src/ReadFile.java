@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Class to read in the input files given
@@ -71,9 +70,11 @@ public class ReadFile {
      * @param stopSequence
      */
     void readStopTimes(ArrayList<Integer> tripId, ArrayList<String> arrivalTime, ArrayList<String> departureTime,
-                              ArrayList<Integer> stopID, ArrayList<Integer> stopSequence) {
+                       ArrayList<Integer> stopID, ArrayList<Integer> stopSequence, ArrayList<String> stopHeadsign,
+                       ArrayList<Integer> pickupType, ArrayList<Integer> dropOffType, ArrayList<Double> shapeDistTravelled) {
         try{
             BufferedReader br = new BufferedReader(new FileReader("stop_times.txt"));
+            TimeSearch ts = new TimeSearch();
             String line;
             String[] splitString;
             // skip header line
@@ -83,11 +84,10 @@ public class ReadFile {
                 // split array by commas
                 splitString = line.split(",");
                 tripId.add(checkIntIsNotBlank(splitString[0]));
-                arrivalTime.add(splitString[1]);
-                departureTime.add(splitString[2]);
+                arrivalTime.add(ts.removeInvalidTimes(ts.makeTimeValid(splitString[1])));
+                departureTime.add(ts.removeInvalidTimes(ts.makeTimeValid(splitString[2])));
                 stopID.add(checkIntIsNotBlank(splitString[3]));
                 stopSequence.add(checkIntIsNotBlank(splitString[4]));
-                /*
                 stopHeadsign.add(splitString[5]);
                 pickupType.add(checkIntIsNotBlank(splitString[6]));
                 dropOffType.add(checkIntIsNotBlank(splitString[7]));
@@ -95,7 +95,6 @@ public class ReadFile {
                     shapeDistTravelled.add(0.0);
                 }
                 else shapeDistTravelled.add(checkDoubleIsNotBlank(splitString[8]));
-                 */
             }
         } catch(FileNotFoundException e){
             System.err.println("\"stop_times.txt\" not found. ");
@@ -162,12 +161,5 @@ public class ReadFile {
             return Double.parseDouble(string);
         }
         return 0;
-    }
-
-    String convertTime(String string){
-           if(string.charAt(0) == ' '){
-               string = "0" + string.substring(1);
-           }
-           return string;
     }
 }

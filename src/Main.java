@@ -22,6 +22,10 @@ public class Main {
     static ArrayList<String> departureTime = new ArrayList<>();
     static ArrayList<Integer> stopTimesStopID = new ArrayList<>();
     static ArrayList<Integer> stopSequence = new ArrayList<>();
+    static ArrayList<String> stopHeadsign = new ArrayList<>();
+    static ArrayList<Integer> pickupType = new ArrayList<>();
+    static ArrayList<Integer> dropOffType = new ArrayList<>();
+    static ArrayList<Double> shapeDistTravelled = new ArrayList<>();
     // initialise ArrayLists for transfers.txt
     static ArrayList<Integer> fromStopID = new ArrayList<>();
     static ArrayList<Integer> toStopID = new ArrayList<>();
@@ -35,7 +39,8 @@ public class Main {
         ReadFile rf = new ReadFile();
         rf.readStops(stopsStopID, stopCode, stopName, stopDesc, stopLat, stopLon, stopURL, zoneID, locationType,
                 parentStation);
-        rf.readStopTimes(tripId, arrivalTime, departureTime, stopTimesStopID, stopSequence);
+        rf.readStopTimes(tripId, arrivalTime, departureTime, stopTimesStopID, stopSequence, stopHeadsign, pickupType,
+                dropOffType, shapeDistTravelled);
         rf.readTransfers(fromStopID, toStopID, transferType, minTransferTime);
         // initialise Scanner to allow user input
         Scanner sc = new Scanner(System.in);
@@ -48,37 +53,78 @@ public class Main {
             System.out.print("4) Exit. \n");
             System.out.print("Please enter number of preferred option (e.g. '1' for Find route between 2 stops): ");
             String status = sc.nextLine();
-            // the user wants to find the route between 2 stops
-            if (status.equalsIgnoreCase("1")) {
-                EdgeWeightedDigraph ewd = new EdgeWeightedDigraph(12479);
-                System.out.println("\nFind route between 2 stops: ");
-                System.out.print("Enter starting stop (using the stop ID): ");
-                int source = sc.nextInt();
-                System.out.print("Enter destination stop (using the stop ID): ");
-                int destination = sc.nextInt();
-                FindShortestPath fsp = new FindShortestPath(ewd, stopTimesStopID, tripId, fromStopID, toStopID, transferType, minTransferTime);
-                fsp.listOfStops(ewd, source, destination);
-            // the user wants to search by stop name
-            } else if (status.equalsIgnoreCase("2")) {
-                System.out.println("\nSearch by stop name: ");
-                System.out.print("Enter stop name: ");
-                StopSearch ss = new StopSearch();
-                TST tst = new TST();
-                String searchStop = sc.nextLine();
-                ss.printDetails(searchStop, stopsStopID, stopName, stopCode, stopDesc, stopLat, stopLon, stopURL,
-                                                                            zoneID, locationType,  parentStation, tst);
-            }
-            // the user wants to search by arrival time
-            else if (status.equalsIgnoreCase("3")){
-                System.out.println("WIP");
-            }
-            else if (status.equalsIgnoreCase("4")) {
-                quit = true;
-                sc.close();
-            } else {
-                System.out.print("Invalid: please type 'Enter' or 'Exit': \n");
-                sc.next();
+            // make sure input is between 1 and 4
+            if (Integer.parseInt(status) >= 1 && Integer.parseInt(status) <= 4) {
+                // the user wants to find the route between 2 stops
+                if (status.equalsIgnoreCase("1")) {
+                    // initialise edge weighted digraph
+                    EdgeWeightedDigraph ewd = new EdgeWeightedDigraph(12479);
+                    System.out.println("\nFind route between 2 stops ");
+                    // user inputs source vertex
+                    System.out.print("Enter starting stop (using the stop ID): ");
+                    int source = sc.nextInt();
+                    // user inputs destination vertex
+                    System.out.print("Enter destination stop (using the stop ID): ");
+                    int destination = sc.nextInt();
+                    // find shortest path from source to destination
+                    FindShortestPath fsp = new FindShortestPath(ewd, stopTimesStopID, tripId, fromStopID, toStopID, transferType, minTransferTime);
+                    // print list of stops
+                    fsp.listOfStops(ewd, source, destination);
+                    System.out.println("\nWould you like to continue? (type 'N' if no, any other key to continue)");
+                    String runAgain = sc.nextLine();
+                    if (runAgain.equalsIgnoreCase("n")) {
+                        quit = true;
+                    }
+                }
+
+                // the user wants to search by stop name
+                else if (status.equalsIgnoreCase("2")) {
+                    System.out.println("\nSearch by stop name ");
+                    System.out.print("Enter stop name: ");
+                    StopSearch ss = new StopSearch();
+                    TST tst = new TST();
+                    // user inputs stop to search for
+                    String searchStop = sc.nextLine();
+                    ss.printDetails(searchStop, stopsStopID, stopName, stopCode, stopDesc, stopLat, stopLon, stopURL,
+                            zoneID, locationType, parentStation, tst);
+                    System.out.println("\nWould you like to continue? (type 'N' if no, any other key to continue)");
+                    String runAgain = sc.nextLine();
+                    if (runAgain.equalsIgnoreCase("n")) {
+                        quit = true;
+                    }
+                }
+                // the user wants to search by arrival time
+                else if (status.equalsIgnoreCase("3")) {
+                    TimeSearch ts = new TimeSearch();
+                    System.out.println("\nSearch by arrival time ");
+                    // user inputs arrival time
+                    System.out.print("Enter arrival time (hh:mm:ss): ");
+                    String arrivalTimeSearch = sc.nextLine();
+                    // input must be of the format hh:mm:ss
+                    if (arrivalTimeSearch.length() != 8) {
+                        System.err.println("Invalid. Please use format hh:mm:ss. ");
+                    } else {
+                        // make time entered valid
+                        arrivalTimeSearch = ts.removeInvalidTimes(arrivalTimeSearch);
+                        // make sure time is of format hh:mm:ss
+                        arrivalTimeSearch = ts.makeTimeValid(arrivalTimeSearch);
+                        // print results
+                        ts.searchByArrivalTime(arrivalTimeSearch, tripId, arrivalTime, departureTime, stopTimesStopID, stopSequence, stopHeadsign, pickupType,
+                                dropOffType, shapeDistTravelled);
+                    }
+                    System.out.println("\nWould you like to continue? ('type 'N' if no, any other key to continue)");
+                    String runAgain = sc.nextLine();
+                    if (runAgain.equalsIgnoreCase("n")) {
+                        quit = true;
+                    }
+                } else if (status.equalsIgnoreCase("4")) {
+                    quit = true;
+                    sc.close();
+                } else {
+                    System.err.print("\nInvalid: please enter a number between 1 and 4 \n");
+                }
             }
         }
     }
+
 }
