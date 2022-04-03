@@ -38,7 +38,7 @@ public class ReadFile {
                 splitLine = line.split(",");
                 stopID.add(checkIntIsNotBlank(splitLine[0]));
                 stopCode.add(checkIntIsNotBlank(splitLine[1]));
-                stopName.add(splitLine[2]);
+                stopName.add(moveFlagstop(splitLine[2]));
                 stopDesc.add(splitLine[3]);
                 stopLat.add(checkDoubleIsNotBlank(splitLine[4]));
                 stopLon.add(checkDoubleIsNotBlank(splitLine[5]));
@@ -93,13 +93,9 @@ public class ReadFile {
      * @param departureTime
      * @param stopID
      * @param stopSequence
-     * @param pickupType
-     * @param dropOffType
-     * @param shapeDistTravelled
      */
     static void readStopTimes(ArrayList<Integer> tripId, ArrayList<String> arrivalTime, ArrayList<String> departureTime,
-                              ArrayList<Integer> stopID, ArrayList<Integer> stopSequence, ArrayList<String> stopHeadsign,
-                              ArrayList<Integer> pickupType, ArrayList<Integer> dropOffType, ArrayList<Double> shapeDistTravelled) {
+                              ArrayList<Integer> stopID, ArrayList<Integer> stopSequence) {
         try{
             BufferedReader br = new BufferedReader(new FileReader("stop_times.txt"));
             String line;
@@ -115,6 +111,7 @@ public class ReadFile {
                 departureTime.add(splitString[2]);
                 stopID.add(checkIntIsNotBlank(splitString[3]));
                 stopSequence.add(checkIntIsNotBlank(splitString[4]));
+                /*
                 stopHeadsign.add(splitString[5]);
                 pickupType.add(checkIntIsNotBlank(splitString[6]));
                 dropOffType.add(checkIntIsNotBlank(splitString[7]));
@@ -122,6 +119,7 @@ public class ReadFile {
                     shapeDistTravelled.add(0.0);
                 }
                 else shapeDistTravelled.add(checkDoubleIsNotBlank(splitString[8]));
+                 */
             }
         } catch(FileNotFoundException e){
             System.err.println("\"stop_times.txt\" not found. ");
