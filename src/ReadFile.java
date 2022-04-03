@@ -22,12 +22,13 @@ public class ReadFile {
      * @param parentStation
      * @throws IOException
      */
-    static void readStops(ArrayList<Integer> stopID, ArrayList<Integer> stopCode, ArrayList<String> stopName,
+    void readStops(ArrayList<Integer> stopID, ArrayList<Integer> stopCode, ArrayList<String> stopName,
                             ArrayList<String> stopDesc, ArrayList<Double> stopLat, ArrayList<Double> stopLon,
                             ArrayList<String> stopURL, ArrayList<Integer> zoneID, ArrayList<Integer> locationType,
                             ArrayList<Integer> parentStation) {
         try {
             BufferedReader br = new BufferedReader((new FileReader("stops.txt")));
+            StopSearch ss = new StopSearch();
             // skip line of headings
             br.readLine();
             String line;
@@ -38,7 +39,7 @@ public class ReadFile {
                 splitLine = line.split(",");
                 stopID.add(checkIntIsNotBlank(splitLine[0]));
                 stopCode.add(checkIntIsNotBlank(splitLine[1]));
-                stopName.add(moveFlagstop(splitLine[2]));
+                stopName.add(ss.moveKeywords(splitLine[2]));
                 stopDesc.add(splitLine[3]);
                 stopLat.add(checkDoubleIsNotBlank(splitLine[4]));
                 stopLon.add(checkDoubleIsNotBlank(splitLine[5]));
@@ -59,32 +60,7 @@ public class ReadFile {
         }
     }
 
-    /**
-     * Method to move specified keywords from start of string to end of string for search functionality
-     * @param string: input string
-     * @return string with first word moved to last position
-     * */
-   static String moveFlagstop(String string) {
-       // copy each word in string into an array splitString
-       String[] splitString = string.split("\\s+");
-       // save first value of splitString (we want to move this value)
-       String wordToMove = splitString[0];
-       // only alter the string if it contains one of the keywords
-       if (wordToMove.equalsIgnoreCase("flagstop") || wordToMove.equalsIgnoreCase("wb") ||
-               wordToMove.equalsIgnoreCase("nb") || wordToMove.equalsIgnoreCase("sb") ||
-               wordToMove.equalsIgnoreCase("eb")){
-           // move each element in splitString to the left
-           for (int i = 0; i <= splitString.length - 2; i++) {
-               splitString[i] = splitString[i + 1];
-           }
-       // insert word we want to move to the end of splitString
-       splitString[splitString.length - 1] = wordToMove;
-       // save splitString into original string variable
-       string = Arrays.toString(splitString);
-       string = string.replace(",", "").replace("[", "").replace("]", "");
-       }
-       return string;
-   }
+
 
     /**
      * read in the "stop_times.txt" file
@@ -94,7 +70,7 @@ public class ReadFile {
      * @param stopID
      * @param stopSequence
      */
-    static void readStopTimes(ArrayList<Integer> tripId, ArrayList<String> arrivalTime, ArrayList<String> departureTime,
+    void readStopTimes(ArrayList<Integer> tripId, ArrayList<String> arrivalTime, ArrayList<String> departureTime,
                               ArrayList<Integer> stopID, ArrayList<Integer> stopSequence) {
         try{
             BufferedReader br = new BufferedReader(new FileReader("stop_times.txt"));
@@ -136,7 +112,7 @@ public class ReadFile {
      * @param transferType
      * @param minTransferTime
      */
-    static void readTransfers(ArrayList<Integer> fromStopID, ArrayList<Integer> toStopID, ArrayList<Integer> transferType,
+    void readTransfers(ArrayList<Integer> fromStopID, ArrayList<Integer> toStopID, ArrayList<Integer> transferType,
                                 ArrayList<Integer> minTransferTime) {
         try {
             BufferedReader br = new BufferedReader(new FileReader("transfers.txt"));
@@ -169,7 +145,7 @@ public class ReadFile {
      * @param string: input string
      * @return 0 is string is null, parsed int otherwise
      */
-    static int checkIntIsNotBlank(String string){
+    int checkIntIsNotBlank(String string){
         if (string != null && !string.equals(" ")) {
             return Integer.parseInt(string);
         }
@@ -181,14 +157,14 @@ public class ReadFile {
      * @param string: input string
      * @return 0.0 if string is null, parsed double otherwise
      */
-    static double checkDoubleIsNotBlank(String string){
+    double checkDoubleIsNotBlank(String string){
         if (string != null && !string.equals(" ")) {
             return Double.parseDouble(string);
         }
         return 0;
     }
 
-    static String convertTime(String string){
+    String convertTime(String string){
            if(string.charAt(0) == ' '){
                string = "0" + string.substring(1);
            }
