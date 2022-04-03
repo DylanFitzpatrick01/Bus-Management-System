@@ -32,8 +32,6 @@ public class Main {
 
     public static void main(String[] args) {
         boolean quit = false;
-        int V;
-        EdgeWeightedDigraph ewd = new EdgeWeightedDigraph(12479);
         ReadFile rf = new ReadFile();
         rf.readStops(stopsStopID, stopCode, stopName, stopDesc, stopLat, stopLon, stopURL, zoneID, locationType,
                 parentStation);
@@ -43,28 +41,38 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         System.out.print("Welcome to the Vancouver Bus Management System! \n");
         while (!quit) {
-            System.out.print("What would you like to do? \n");
+            System.out.print("\nWhat would you like to do? \n");
             System.out.print("1) Find route between 2 stops. \n");
             System.out.print("2) Search by stop name. \n");
             System.out.print("3) Search by arrival time. \n");
             System.out.print("4) Exit. \n");
             System.out.print("Please enter number of preferred option (e.g. '1' for Find route between 2 stops): ");
             String status = sc.nextLine();
+            // the user wants to find the route between 2 stops
             if (status.equalsIgnoreCase("1")) {
+                EdgeWeightedDigraph ewd = new EdgeWeightedDigraph(12479);
                 System.out.println("\nFind route between 2 stops: ");
                 System.out.print("Enter starting stop (using the stop ID): ");
                 int source = sc.nextInt();
                 System.out.print("Enter destination stop (using the stop ID): ");
                 int destination = sc.nextInt();
                 FindShortestPath fsp = new FindShortestPath(ewd, stopTimesStopID, tripId, fromStopID, toStopID, transferType, minTransferTime);
-                System.out.println("The path from stop " + source + " to stop " + destination + " is: ");
                 fsp.listOfStops(ewd, source, destination);
-
+            // the user wants to search by stop name
             } else if (status.equalsIgnoreCase("2")) {
                 System.out.println("\nSearch by stop name: ");
-                System.out.println("Enter stop name :");
-                String searchString = sc.nextLine();
-            } else if (status.equalsIgnoreCase("4")) {
+                System.out.print("Enter stop name: ");
+                StopSearch ss = new StopSearch();
+                TST tst = new TST();
+                String searchStop = sc.nextLine();
+                ss.printDetails(searchStop, stopsStopID, stopName, stopCode, stopDesc, stopLat, stopLon, stopURL,
+                                                                            zoneID, locationType,  parentStation, tst);
+            }
+            // the user wants to search by arrival time
+            else if (status.equalsIgnoreCase("3")){
+                System.out.println("WIP");
+            }
+            else if (status.equalsIgnoreCase("4")) {
                 quit = true;
                 sc.close();
             } else {

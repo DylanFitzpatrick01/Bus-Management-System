@@ -44,6 +44,12 @@ public class FindShortestPath {
      */
     void listOfStops(EdgeWeightedDigraph ewd, int source, int destination) {
         DijkstraSP dijkstra = new DijkstraSP(ewd, source);
-        System.out.println(dijkstra.pathTo(destination));
+            if(dijkstra.hasPathTo(destination)){
+                System.out.println("\nThe path from stop " + source + " to stop " + destination + " is: ");
+                for(DirectedEdge de : dijkstra.pathTo(destination)){
+                    System.out.println(de);
+                }
+                System.out.println("Total distance: " + dijkstra.distTo(destination) + "\n");
+        }else System.out.println("\nRoute between these stops does not exist. ");
     }
 }
