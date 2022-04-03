@@ -1,90 +1,49 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 /**
  * Class that finds the shortest edge between 2 bus stops
  */
 public class FindShortestPath {
 
-    final static int INFINITY = Integer.MAX_VALUE;
-    static int V;
+    final int INFINITY = Integer.MAX_VALUE;
+    final int V = 12478;
 
-    FindShortestPath(double[][] graph) {
-        graph = new double[12478][12478];
-        for(int i = 0; i < 12478; i++){
-            for(int j = 0; j < 12478; j++){
-                graph[i][j] = INFINITY;
+    // construct our graph
+    FindShortestPath(EdgeWeightedDigraph ewd, ArrayList<Integer> stopTimes, ArrayList<Integer> tripID, ArrayList<Integer>transfersFrom,
+                            ArrayList<Integer> transfersTo, ArrayList<Integer> transferType, ArrayList<Integer> minTransferTime){
+        DirectedEdge df;
+        // if edge is from "stop_times.txt" add edge with weight 1
+        for (int i = 0; i < stopTimes.size()-1; i++){
+                if(Objects.equals(tripID.get(i), tripID.get(i+1))){
+                    df = new DirectedEdge(stopTimes.get(i), stopTimes.get(i+1), 1);
+                    ewd.addEdge(df);
             }
         }
-        ArrayList<Integer> tripId = new ArrayList<>();
-        ArrayList<String> arrivalTime = new ArrayList<>();
-        ArrayList<String> departureTime = new ArrayList<>();
-        ArrayList<Integer> stopID = new ArrayList<>();
-        ArrayList<Integer> stopSequence = new ArrayList<>();
-        ArrayList<String> stopHeadsign = new ArrayList<>();
-        ArrayList<Integer> pickupType = new ArrayList<>();
-        ArrayList<Integer> dropOffType = new ArrayList<>();
-        ArrayList<Double> shapeDistTravelled = new ArrayList<>();
-        ArrayList<Integer> fromStopID = new ArrayList<>();
-        ArrayList<Integer> toStopID = new ArrayList<>();
-        ArrayList<Integer> transferType = new ArrayList<>();
-        ArrayList<Integer> minTransferTime = new ArrayList<>();
-        ReadFile.readStopTimes(tripId, arrivalTime, departureTime, stopID, stopSequence, stopHeadsign, pickupType,
-                dropOffType, shapeDistTravelled);
-        ReadFile.readTransfers(fromStopID, toStopID, transferType, minTransferTime);
-
-        // add values from "stop_times.txt" to graph
-        for (int i = 0; i < tripId.size(); i++) {
-            for (int j = 0; j < tripId.size(); j++) {
-                if (tripId.get(i).equals(tripId.get(j))) {
-                    graph[stopID.get(i)][stopID.get(j)] = 1;
-                }
-            }
-        }
-        // add values from "transfers.txt" to graph
-        for(int i = 0; i < fromStopID.size(); i++){
+        // if edge is from "transfers.txt"
+        for(int i = 0; i < transfersFrom.size(); i++){
+            // if transfer type is 0, add edge with weight 2
             if(transferType.get(i) == 0){
-                graph[fromStopID.get(i)][toStopID.get(i)] = 2;
+                df = new DirectedEdge(transfersFrom.get(i), transfersTo.get(i), 2);
+                ewd.addEdge(df);
             }
-            else if(transferType.get(i) == 2){
-                graph[fromStopID.get(i)][toStopID.get(i)] = minTransferTime.get(i)/100;
+            // if transfer time is 2, add edge with weight minimum transfer time / 2
+            if(transferType.get(i) == 2){
+                df = new DirectedEdge(transfersFrom.get(i), transfersTo.get(i), (double )minTransferTime.get(i)/100);
+                ewd.addEdge(df);
             }
         }
     }
-
-
-
 
     /**
-     * @param graph: adjacency matrix representing graph
-     * @return distance matrix
+     * show the user the path from one vertex to another as well as the associated cost for each edge
+     * @param ewd: graph
+     * @param source: source vertex
+     * @param destination: destination vertex
      */
-    double[][] floydWarshall(double[][] graph) {
-        // initialise adjacency matrix
-        double[][] dist = new double[V][V];
-        int i, j, k;
-
-        // input weight values into adjacency matrix
-        for (i = 0; i < V; i++)
-            for (j = 0; j < V; j++) {
-                if (i == j)
-                    dist[i][j] = 0;
-                else dist[i][j] = graph[i][j];
-            }
-
-        // find the shortest path  for all i,j
-        for (k = 0; k < V; k++) {
-            for (i = 0; i < V; i++) {
-                for (j = 0; j < V; j++) {
-                    if (dist[i][k] + dist[k][j] < dist[i][j])
-                        dist[i][j] = dist[i][k] + dist[k][j];
-                }
-            }
-        }
-        return dist;
+    void listOfStops(EdgeWeightedDigraph ewd, int source, int destination) {
+        DijkstraSP dijkstra = new DijkstraSP(ewd, source);
+        System.out.println(dijkstra.pathTo(destination));
     }
-
 }
