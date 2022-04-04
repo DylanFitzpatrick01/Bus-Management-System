@@ -47,28 +47,31 @@ public class StopSearch {
      */
     void printDetails(String searchStop, ArrayList<Integer> stopId, ArrayList<String> stopName, ArrayList<Integer> stopCode,
                      ArrayList<String> stopDesc, ArrayList<Double> stopLat, ArrayList<Double> stopLon, ArrayList<String> stopURL,
-                      ArrayList<Integer> zoneID, ArrayList<Integer> locationType, ArrayList<Integer> parentStation, TST tst) {
+                      ArrayList<Integer> zoneID, ArrayList<Integer> locationType, ArrayList<Integer> parentStation, TST tst){
         ArrayList<String> movedKeywords = new ArrayList<>();
         System.out.println();
         // insert all stops into ternary search tree
         for (String value : stopName) {
             tst.put(moveKeywords(value), 0);
         }
+
         // print stop details
-        for (Object s : tst.keysWithPrefix(searchStop)) {
-            String string = s.toString();
-            movedKeywords.add(string);
-            System.out.println(string);
-            System.out.println("Stop ID: " + stopId.get(stopName.indexOf(string)));
-            System.out.println("Stop code: " + stopCode.get(stopName.indexOf(string)));
-            System.out.println("Description: " + stopDesc.get(stopName.indexOf(string)));
-            System.out.println("Stop Latitude: " + stopLat.get(stopName.indexOf(string)));
-            System.out.println("Stop Longitude: " + stopLon.get(stopName.indexOf(string)));
-            System.out.println("Stop URL: " + stopURL.get(stopName.indexOf(string)));
-            System.out.println("Zone ID: " + zoneID.get(stopName.indexOf(string)));
-            System.out.println("Location Type : " + locationType.get(stopName.indexOf(string)));
-            System.out.println("Parent Station: " + parentStation.get(stopName.indexOf(string)));
-            System.out.println();
-        }
+        if(!tst.keysWithPrefix(searchStop).toString().isEmpty()) {
+            for (Object s : tst.keysWithPrefix(searchStop)) {
+                String string = s.toString();
+                movedKeywords.add(string);
+                System.out.println(string);
+                System.out.println("Stop ID: " + stopId.get(stopName.indexOf(string)));
+                System.out.println("Stop code: " + stopCode.get(stopName.indexOf(string)));
+                System.out.println("Description: " + stopDesc.get(stopName.indexOf(string)));
+                System.out.println("Stop Latitude: " + stopLat.get(stopName.indexOf(string)));
+                System.out.println("Stop Longitude: " + stopLon.get(stopName.indexOf(string)));
+                System.out.println("Stop URL: " + stopURL.get(stopName.indexOf(string)));
+                System.out.println("Zone ID: " + zoneID.get(stopName.indexOf(string)));
+                System.out.println("Location Type : " + locationType.get(stopName.indexOf(string)));
+                System.out.println("Parent Station: " + parentStation.get(stopName.indexOf(string)));
+                System.out.println();
+            }
+        } else System.out.println("No stops found. ");
     }
 }
