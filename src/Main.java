@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -35,7 +36,10 @@ public class Main {
     static EdgeWeightedDigraph graph;
 
     public static void main(String[] args) {
+        System.out.println("Welcome to the Vancouver Bus Management System!\n");
+        System.out.println("Loading...\n");
         boolean quit = false;
+        boolean valid = false;
         ReadFile rf = new ReadFile();
         rf.readStops(stopsStopID, stopCode, stopName, stopDesc, stopLat, stopLon, stopURL, zoneID, locationType,
                 parentStation);
@@ -44,7 +48,6 @@ public class Main {
         rf.readTransfers(fromStopID, toStopID, transferType, minTransferTime);
         // initialise Scanner to allow user input
         Scanner sc = new Scanner(System.in);
-        System.out.print("Welcome to the Vancouver Bus Management System! \n");
         while (!quit) {
             System.out.print("\nWhat would you like to do? \n");
             System.out.print("1) Find route between 2 stops. \n");
@@ -57,15 +60,45 @@ public class Main {
             if (Integer.parseInt(status) >= 1 && Integer.parseInt(status) <= 4) {
                 // the user wants to find the route between 2 stops
                 if (status.equalsIgnoreCase("1")) {
+                    int source = 0;
+                    int destination = 0;
                     // initialise edge weighted digraph
                     EdgeWeightedDigraph ewd = new EdgeWeightedDigraph(12479);
                     System.out.println("\nFind route between 2 stops ");
                     // user inputs source vertex
                     System.out.print("Enter starting stop (using the stop ID): ");
-                    int source = sc.nextInt();
+                    while(!valid) {
+                        try {
+                            source = sc.nextInt();
+                            valid = true;
+                            if(source < 0 || source > 12478) {
+                                System.out.println("Value must be between 0 and 12478");
+                                System.out.print("Enter starting stop (using the stop ID): ");
+                                valid = false;
+                            }
+                        } catch (InputMismatchException e) {
+                            System.err.print("Please enter a numeric value: ");
+                        }
+                        sc.nextLine();
+                    }
                     // user inputs destination vertex
                     System.out.print("Enter destination stop (using the stop ID): ");
-                    int destination = sc.nextInt();
+                    valid = false;
+                    while (!valid) {
+                        try {
+                            destination = sc.nextInt();
+                            valid = true;
+                            if(source < 0 || source > 12478) {
+                                System.out.println("Value must be between 0 and 12478");
+                                System.out.print("Enter destination stop (using the stop ID): ");
+                                valid = false;
+                            }
+                        } catch (InputMismatchException e) {
+                            System.err.print("Please enter a numeric value: ");
+                        }
+                        sc.nextLine();
+                    }
+                    valid = false;
                     // find shortest path from source to destination
                     FindShortestPath fsp = new FindShortestPath(ewd, stopTimesStopID, tripId, fromStopID, toStopID, transferType, minTransferTime);
                     // print list of stops
@@ -79,14 +112,16 @@ public class Main {
 
                 // the user wants to search by stop name
                 else if (status.equalsIgnoreCase("2")) {
+                    String searchStop = "";
                     System.out.println("\nSearch by stop name ");
                     System.out.print("Enter stop name: ");
                     StopSearch ss = new StopSearch();
                     TST tst = new TST();
                     // user inputs stop to search for
-                    String searchStop = sc.nextLine();
-                    ss.printDetails(searchStop, stopsStopID, stopName, stopCode, stopDesc, stopLat, stopLon, stopURL,
-                            zoneID, locationType, parentStation, tst);
+                    searchStop = sc.nextLine();
+                        ss.printDetails(searchStop, stopsStopID, stopName, stopCode, stopDesc, stopLat, stopLon, stopURL,
+                                zoneID, locationType, parentStation, tst);
+                        valid = true;
                     System.out.println("\nWould you like to continue? (type 'N' if no, any other key to continue)");
                     String runAgain = sc.nextLine();
                     if (runAgain.equalsIgnoreCase("n")) {
@@ -102,7 +137,7 @@ public class Main {
                     String arrivalTimeSearch = sc.nextLine();
                     // input must be of the format hh:mm:ss
                     if (arrivalTimeSearch.length() != 8) {
-                        System.err.println("Invalid. Please use format hh:mm:ss. ");
+                        System.err.println("Invalid. Please use format hh:mm:ss ");
                     } else {
                         // make time entered valid
                         arrivalTimeSearch = ts.removeInvalidTimes(arrivalTimeSearch);
@@ -119,12 +154,13 @@ public class Main {
                     }
                 } else if (status.equalsIgnoreCase("4")) {
                     quit = true;
+                    System.out.print("Thank you for using our service!");
                     sc.close();
                 } else {
                     System.err.print("\nInvalid: please enter a number between 1 and 4 \n");
                 }
             }
         }
+        sc.close();
     }
-
 }
