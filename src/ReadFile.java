@@ -9,17 +9,16 @@ public class ReadFile {
 
     /**
      * read the "readStops.txt" file
-     * @param stopID
-     * @param stopCode
-     * @param stopName
-     * @param stopDesc
-     * @param stopLat
-     * @param stopLon
-     * @param stopURL
-     * @param zoneID
-     * @param locationType
-     * @param parentStation
-     * @throws IOException
+     * @param stopID: ArrayList containing the stop IDs
+     * @param stopCode: ArrayList containing the stop codes
+     * @param stopName: ArrayList containing the stop names
+     * @param stopDesc: ArrayList containing the stop descriptions
+     * @param stopLat: ArrayList containing the stop latitudes
+     * @param stopLon: ArrayList containing the stop longitudes
+     * @param stopURL: ArrayList containing the stop URLs
+     * @param zoneID: ArrayList containing the zone IDs
+     * @param locationType: ArrayList containing the location types
+     * @param parentStation: ArrayList containing the parent stations
      */
     void readStops(ArrayList<Integer> stopID, ArrayList<Integer> stopCode, ArrayList<String> stopName,
                             ArrayList<String> stopDesc, ArrayList<Double> stopLat, ArrayList<Double> stopLon,
@@ -63,11 +62,15 @@ public class ReadFile {
 
     /**
      * read in the "stop_times.txt" file
-     * @param tripId
-     * @param arrivalTime
-     * @param departureTime
-     * @param stopID
-     * @param stopSequence
+     * @param tripId: ArrayList containing the trip IDs
+     * @param arrivalTime: ArrayList containing the arrival times
+     * @param departureTime: ArrayList containing the departure times
+     * @param stopID: ArrayList containing the stop IDs
+     * @param stopSequence: ArrayList containing the stop sequences
+     * @param stopHeadsign: ArrayList containing the stop headsigns
+     * @param pickupType: ArrayList containing the pickup types
+     * @param dropOffType: ArrayList containing the dropoff types
+     * @param shapeDistTravelled: ArrayList containing the shape dist travelled
      */
     void readStopTimes(ArrayList<Integer> tripId, ArrayList<String> arrivalTime, ArrayList<String> departureTime,
                        ArrayList<Integer> stopID, ArrayList<Integer> stopSequence, ArrayList<String> stopHeadsign,
@@ -106,10 +109,10 @@ public class ReadFile {
 
     /**
      * read in the "transfers.txt" file
-     * @param fromStopID
-     * @param toStopID
-     * @param transferType
-     * @param minTransferTime
+     * @param fromStopID: ArrayList containing the source stop IDs
+     * @param toStopID: ArrayList containing the destination stop IDs
+     * @param transferType: ArrayList containing the transfer types
+     * @param minTransferTime: ArrayList containing the minimum transfer times
      */
     void readTransfers(ArrayList<Integer> fromStopID, ArrayList<Integer> toStopID, ArrayList<Integer> transferType,
                                 ArrayList<Integer> minTransferTime) {

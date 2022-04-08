@@ -6,10 +6,16 @@ import java.util.Objects;
  */
 public class FindShortestPath {
 
-    final int INFINITY = Integer.MAX_VALUE;
-    final int V = 12478;
-
-    // construct our graph
+    /**
+     * Construct our graph
+     * @param ewd: the graph to insert values in
+     * @param stopTimes: ArrayList containing the stop times
+     * @param tripID: ArrayList containing the trip IDs
+     * @param transfersFrom: ArrayList containing the transfer sources
+     * @param transfersTo: ArrayList containing the transfer destination
+     * @param transferType: ArrayList containing the transfer types
+     * @param minTransferTime: ArrayList containing the minimum transfer times
+     */
     FindShortestPath(EdgeWeightedDigraph ewd, ArrayList<Integer> stopTimes, ArrayList<Integer> tripID, ArrayList<Integer>transfersFrom,
                             ArrayList<Integer> transfersTo, ArrayList<Integer> transferType, ArrayList<Integer> minTransferTime){
         DirectedEdge df;
@@ -50,6 +56,6 @@ public class FindShortestPath {
                     System.out.println(de);
                 }
                 System.out.println("Total distance: " + dijkstra.distTo(destination) + "\n");
-        }else System.out.println("\nRoute between these stops does not exist. ");
+        }else System.out.println("\nRoute between these stops does not exist. \n");
     }
 }
