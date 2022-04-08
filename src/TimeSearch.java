@@ -10,7 +10,7 @@ public class TimeSearch {
         // replace any blank spaces with a 0
         time =  time.replaceAll(" ", "0");
         String[] splitTime = time.split(":");
-        // append 0 to front of any lone integer value
+        // append 0 to front of any lone integer value (0-9)
         if(splitTime[0].length() == 1)
             splitTime[0] = "0" + splitTime[0];
         if(splitTime[1].length() == 1)
@@ -39,15 +39,15 @@ public class TimeSearch {
     /**
      * return trip details for given arrival time
      * @param time: input string
-     * @param tripId
-     * @param arrivalTime
-     * @param departureTime
-     * @param stopId
-     * @param stopSequence
-     * @param stopHeadsign
-     * @param pickupType
-     * @param dropoffType
-     * @param shapeDistTraveled
+     * @param tripId: ArrayList containing the trip IDs
+     * @param arrivalTime: ArrayList containing the arrival times
+     * @param departureTime: ArrayList containing the departure times
+     * @param stopId: ArrayList containing the stop IDs
+     * @param stopSequence: ArrayList containing the stop sequences
+     * @param stopHeadsign: ArrayList containing the stop headsigns
+     * @param pickupType: ArrayList containing the pickup types
+     * @param dropoffType: ArrayList containing the dropoff types
+     * @param shapeDistTraveled: ArrayList containing the shape dist travelled
      */
     void searchByArrivalTime(String time, ArrayList<Integer> tripId, ArrayList<String> arrivalTime, ArrayList<String>
                              departureTime, ArrayList<Integer> stopId, ArrayList<Integer> stopSequence,
@@ -62,7 +62,7 @@ public class TimeSearch {
             int currTripId = tripId.get(index);
             // index of first instance of the trip ID
             int indexOfCurrTripId = tripId.indexOf(currTripId);
-            System.out.println("Trip ID: " + currTripId + "\n");
+            System.out.println("\nTrip ID: " + currTripId + "\n");
             // print results
             while (tripId.get(indexOfCurrTripId) == currTripId) {
                 System.out.println("Stop ID: " + stopId.get(indexOfCurrTripId));

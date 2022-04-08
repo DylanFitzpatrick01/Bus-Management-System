@@ -1,4 +1,3 @@
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -9,7 +8,7 @@ public class StopSearch {
      * @return string with first word moved to last position
      * */
     String moveKeywords(String string) {
-        // copy each word in string into an array splitString
+        // copy each word in string into an array splitString (separated by space)
         String[] splitString = string.split("\\s+");
         // save first value of splitString (we want to move this value)
         String wordToMove = splitString[0];
@@ -33,16 +32,16 @@ public class StopSearch {
     /**
      * print stop details
      * @param searchStop: stop to search for
-     * @param stopId
-     * @param stopName
-     * @param stopCode
-     * @param stopDesc
-     * @param stopLat
-     * @param stopLon
-     * @param stopURL
-     * @param zoneID
-     * @param locationType
-     * @param parentStation
+     * @param stopId: ArrayList containing the stop IDs
+     * @param stopName: ArrayList containing the stop names
+     * @param stopCode: ArrayList containing the stop codes
+     * @param stopDesc: ArrayList containing the stop descriptions
+     * @param stopLat: ArrayList containing the stop latitudes
+     * @param stopLon: ArrayList containing the stop longitudes
+     * @param stopURL: ArrayList containing the stop URLs
+     * @param zoneID: ArrayList containing the zone IDs
+     * @param locationType: ArrayList containing the location types
+     * @param parentStation: ArrayList containing the parent stations
      * @param tst: ternary search tree
      */
     void printDetails(String searchStop, ArrayList<Integer> stopId, ArrayList<String> stopName, ArrayList<Integer> stopCode,
@@ -55,8 +54,9 @@ public class StopSearch {
             tst.put(moveKeywords(value), 0);
         }
 
-        // print stop details
+        // check if entry can be found in tst
         if(!tst.keysWithPrefix(searchStop).toString().isEmpty()) {
+            // print details if found
             for (Object s : tst.keysWithPrefix(searchStop)) {
                 String string = s.toString();
                 movedKeywords.add(string);
