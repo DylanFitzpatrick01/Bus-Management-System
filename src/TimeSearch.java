@@ -73,20 +73,24 @@ public class TimeSearch {
         makeTimeValid(time);
         removeInvalidTimes(time);
         ArrayList<Integer>  index = new ArrayList<>();
+        // find all occurrences of time entered in stop times ArrayList
         for(int i = 0; i < arrivalTime.size(); i++){
             if(time.equals(arrivalTime.get(i))){
                 index.add(i);
             }
         }
+        // if the arrival time exists in our array list
         if (arrivalTime.contains(time)) {
+
+            // print all trips in which this time is present
             for(int i = 0; i < index.size(); i++) {
 
                 // find the trip ID associated with the arrival time
                 int currTripId = tripId.get(index.get(i));
                 // index of first instance of the trip ID
                 int indexOfCurrTripId = tripId.indexOf(currTripId);
-                System.out.println("\nTrip ID: " + currTripId + "\n");
                 // print results
+                System.out.println("\nTrip ID: " + currTripId + "\n");
                 while (tripId.get(indexOfCurrTripId) == currTripId) {
                     System.out.println("Stop ID: " + stopId.get(indexOfCurrTripId));
                     System.out.println("Arrival time: " + arrivalTime.get(indexOfCurrTripId));
