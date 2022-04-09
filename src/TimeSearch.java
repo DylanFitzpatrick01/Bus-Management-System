@@ -72,26 +72,33 @@ public class TimeSearch {
                              ArrayList<Double> shapeDistTraveled) {
         makeTimeValid(time);
         removeInvalidTimes(time);
+        ArrayList<Integer>  index = new ArrayList<>();
+        for(int i = 0; i < arrivalTime.size(); i++){
+            if(time.equals(arrivalTime.get(i))){
+                index.add(i);
+            }
+        }
         if (arrivalTime.contains(time)) {
-            // get index of time value
-            int index = arrivalTime.indexOf(time);
-            // find the trip ID associated with the arrival time
-            int currTripId = tripId.get(index);
-            // index of first instance of the trip ID
-            int indexOfCurrTripId = tripId.indexOf(currTripId);
-            System.out.println("\nTrip ID: " + currTripId + "\n");
-            // print results
-            while (tripId.get(indexOfCurrTripId) == currTripId) {
-                System.out.println("Stop ID: " + stopId.get(indexOfCurrTripId));
-                System.out.println("Arrival time: " + arrivalTime.get(indexOfCurrTripId));
-                System.out.println("Departure time: " + departureTime.get(indexOfCurrTripId));
-                System.out.println("Stop Sequence: " + stopSequence.get(indexOfCurrTripId));
-                System.out.println("Stop Headsign: " + stopHeadsign.get(indexOfCurrTripId));
-                System.out.println("Pickup type: " + pickupType.get(indexOfCurrTripId));
-                System.out.println("Dropoff Type: " + dropoffType.get(indexOfCurrTripId));
-                System.out.println("Distance travelled: " + shapeDistTraveled.get(indexOfCurrTripId));
-                System.out.println();
-                indexOfCurrTripId++;
+            for(int i = 0; i < index.size(); i++) {
+
+                // find the trip ID associated with the arrival time
+                int currTripId = tripId.get(index.get(i));
+                // index of first instance of the trip ID
+                int indexOfCurrTripId = tripId.indexOf(currTripId);
+                System.out.println("\nTrip ID: " + currTripId + "\n");
+                // print results
+                while (tripId.get(indexOfCurrTripId) == currTripId) {
+                    System.out.println("Stop ID: " + stopId.get(indexOfCurrTripId));
+                    System.out.println("Arrival time: " + arrivalTime.get(indexOfCurrTripId));
+                    System.out.println("Departure time: " + departureTime.get(indexOfCurrTripId));
+                    System.out.println("Stop Sequence: " + stopSequence.get(indexOfCurrTripId));
+                    System.out.println("Stop Headsign: " + stopHeadsign.get(indexOfCurrTripId));
+                    System.out.println("Pickup type: " + pickupType.get(indexOfCurrTripId));
+                    System.out.println("Dropoff Type: " + dropoffType.get(indexOfCurrTripId));
+                    System.out.println("Distance travelled: " + shapeDistTraveled.get(indexOfCurrTripId));
+                    System.out.println();
+                    indexOfCurrTripId++;
+                }
             }
         } else System.out.println("No trips with this arrival time found. ");
     }
